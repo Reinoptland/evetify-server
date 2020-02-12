@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const User = require("./model");
 const bcrypt = require("bcrypt");
+const { toJWT } = require("../auth/jwt");
 
 const router = new Router();
 
@@ -29,6 +30,23 @@ router.post("/user", async (request, response) => {
       default:
         return response.status(400).send("Baaaddd request");
     }
+  }
+});
+
+router.post("/login", async (request, response) => {
+  console.log(request.body);
+
+  const user = await User.findOne({ where: { email: request.body.email } });
+
+  const passwordValid = bcrypt.compareSync(
+    request.body.password,
+    user.password
+  );
+
+  if (passwordValid) {
+    const token = toJWT({ id: user.id });
+
+    return response.status(200).send({ token: token });
   }
 });
 
