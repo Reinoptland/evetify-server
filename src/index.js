@@ -2,7 +2,6 @@ const express = require("express");
 
 const app = express();
 const port = process.env.PORT || 4000;
-const db = require("./db");
 
 const cors = require("cors");
 const corsMiddleWare = cors();
@@ -15,8 +14,10 @@ const bodyParserMiddleWare = bodyParser.json();
 app.use(bodyParserMiddleWare);
 
 const userRoutes = require("./User/router");
+const eventRoutes = require("./Events/router");
 
 app.use(userRoutes);
+app.use(eventRoutes);
 
 app.get("/ping", (request, response) => {
   response.send("You rang?");
